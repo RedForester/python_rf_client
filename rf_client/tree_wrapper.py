@@ -1,8 +1,11 @@
-from typing import Optional, Generator, List, Iterator, Callable, Dict
+from typing import Optional, Generator, List, Iterator, Callable, Dict, Tuple, TypeVar, Type
 from rf_api_client.models.nodes_api_models import NodeTreeDto, NodeTreeBodyDto
 
 
 SearchFunction = Callable[['NodeWrapper'], bool]
+
+
+T = TypeVar('T', bound='NodeWrapper')
 
 
 class NodeBodyWrapper(NodeTreeBodyDto):
@@ -90,6 +93,20 @@ class NodeWrapper(NodeTreeDto):
         """
         return self.parent_node.body.children
 
+    @classmethod
+    def from_tree_dto(cls: Type[T], tree: NodeTreeDto) -> Tuple[T, Dict[str, T]]:
+        """
+        Will wrap every node of given tree with own class and init each internal index.
+        """
+        root = cls(**tree.dict(by_alias=True))
+        node_index = {c.id: c for c in root.get_all_descendants()}
+
+        for n in root.get_all_descendants():
+            # noinspection PyProtectedMember
+            n._internal_.node_index = node_index
+
+        return root, node_index
+
 
 NodeBodyWrapper.update_forward_refs()
 
@@ -98,12 +115,7 @@ class TreeWrapper:
     """ Represent nodes tree. Every node will be wrapped by `NodeWrapper` """
 
     def __init__(self, tree: NodeTreeDto):
-        self.root = NodeWrapper(**tree.dict(by_alias=True))
-        self.node_index = {c.id: c for c in self.root.get_all_descendants()}
-
-        for n in self.root.get_all_descendants():
-            # noinspection PyProtectedMember
-            n._internal_.node_index = self.node_index
+        self.root, self.node_index = NodeWrapper.from_tree_dto(tree)
 
     def find_by_id(self, id_: str) -> Optional[NodeWrapper]:
         """
