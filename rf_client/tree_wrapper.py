@@ -28,6 +28,7 @@ class NodeWrapper(NodeTreeDto):
         super().__init__(**kwargs)
         object.__setattr__(self, '_internal_', self.__NodeInternalStorage())
 
+    # To wrap all children of given tree with `NodeWrapper` we define a new node body type
     body: NodeBodyWrapper
 
     @property
