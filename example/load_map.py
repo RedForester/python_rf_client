@@ -22,8 +22,8 @@ async def task_with():
         print(data.users)
 
 
-ioloop = asyncio.get_event_loop()
+loop = asyncio.get_event_loop()
 
-ioloop.run_until_complete(task())
-ioloop.run_until_complete(task_with())
-ioloop.close()
+loop.run_until_complete(task())
+loop.run_until_complete(task_with())
+loop.close()
