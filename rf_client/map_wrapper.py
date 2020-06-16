@@ -2,6 +2,7 @@ import asyncio
 from typing import List
 
 from rf_api_client import RfApiClient
+from rf_api_client.models.maps_api_models import MapDto
 from rf_api_client.models.node_types_api_models import NodeTypeDto
 from rf_api_client.models.users_api_models import UserDto
 
@@ -9,40 +10,38 @@ from rf_client.tree_wrapper import TreeWrapper
 
 
 class MapWrapper:
-    def __init__(self, api_client: RfApiClient, map_id: str, view_root_id: str = None):
-        self._api = api_client
-        self.__map_id = map_id
-        self.__view_root_id = view_root_id
+    def __init__(
+            self,
+            *,
+            client: RfApiClient,
+            map_info: MapDto,
+            users: List[UserDto],
+            types: List[NodeTypeDto],
+            tree: TreeWrapper,
+    ):
+        self._client = client
+        self.map_info = map_info
+        self.users = users
+        self.types = types
+        self.tree = tree
 
-        self.users: List[UserDto] = None
-        self.types: List[NodeTypeDto] = None
-        self.tree: TreeWrapper = None
+    @classmethod
+    async def load_all(cls, *, client: RfApiClient, map_id: str) -> 'MapWrapper':
+        """ Load map users, types and nodes """
 
-    async def load_all(self) -> 'MapWrapper':
-        # todo map_info?
-        users, types, nodes = await asyncio.gather(
-            self._api.maps.get_map_users(self.__map_id),
-            self._api.maps.get_map_types(self.__map_id),
-            self._api.maps.get_map_nodes(self.__map_id),  # todo view_root_id
+        map_info, users, types, nodes = await asyncio.gather(
+            client.maps.get_map_by_id(map_id),
+            client.maps.get_map_users(map_id),
+            client.maps.get_map_types(map_id),
+            client.maps.get_map_nodes(map_id)
         )
 
-        self.users = users  # todo wrap users
-        self.types = types  # todo wrap types?
-        self.tree = TreeWrapper(nodes)
+        tree = TreeWrapper(nodes)
 
-        return self
-
-    # todo load_info
-    # todo load_branch
-    # todo load_types
-    # todo load_users
-
-    # todo update_info ?
-
-    # todo for standalone usage?
-    # async def __aenter__(self):
-    #     await asyncio.ensure_future(self.load_all())
-    #     return self
-    #
-    # async def __aexit__(self, exc_type, exc_val, exc_tb):
-    #     pass
+        return cls(
+            client=client,
+            map_info=map_info,
+            users=users,
+            types=types,
+            tree=tree
+        )
