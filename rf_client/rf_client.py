@@ -7,8 +7,11 @@ class RfMaps:
     def __init__(self, api: RfApiClient):
         self._api = api
 
-    async def load_map(self, map_id: str, view_root_id: str = None) -> MapWrapper:
-        return await MapWrapper(self._api, map_id, view_root_id).load_all()
+    async def load_map(self, map_id: str) -> MapWrapper:
+        return await MapWrapper.load_all(
+            client=self._api,
+            map_id=map_id
+        )
 
     # todo get maps list
     # todo create map
