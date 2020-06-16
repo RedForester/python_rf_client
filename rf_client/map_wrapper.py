@@ -6,6 +6,7 @@ from rf_api_client.models.maps_api_models import MapDto
 from rf_api_client.models.node_types_api_models import NodeTypeDto
 from rf_api_client.models.users_api_models import UserDto
 
+from rf_client.log import main_logger as logger
 from rf_client.tree_wrapper import TreeWrapper
 
 
@@ -24,6 +25,8 @@ class MapWrapper:
         self.users = users
         self.types = types
         self.tree = tree
+
+        logger.info(f'Init MapWrapper for map {map_info.id}')  # todo view_root_id = {view_root_id}
 
     @classmethod
     async def load_all(cls, *, client: RfApiClient, map_id: str) -> 'MapWrapper':

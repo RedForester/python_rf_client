@@ -1,13 +1,17 @@
 import asyncio
+import logging
 import os
 
 from rf_api_client import RfApiClient
+
 from rf_client import RfClient
 
 USERNAME = os.getenv('USERNAME')
 PASSWORD = os.getenv('PASSWORD')
 
 MAP_ID = os.getenv('MAP_ID')
+
+logging.basicConfig(level=logging.INFO)
 
 api_client = RfApiClient(
     username=USERNAME,
