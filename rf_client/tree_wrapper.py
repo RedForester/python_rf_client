@@ -16,7 +16,8 @@ class NodeWrapper(NodeTreeDto):
     """
     This class extend simple NodeTreeDto model to add properties and methods to traverse and search in given node tree.
 
-    It is not recommended to create instances of this class manually due to internal tree lookup mechanism
+    It is not recommended to create instances of this class manually due to internal tree lookup mechanism.
+    If you want to create a new instance of NodeWrapper, please use the `from_tree_dto` class method.
     """
 
     # Crude private field implementation - https://github.com/samuelcolvin/pydantic/issues/655#issuecomment-585374936
