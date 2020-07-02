@@ -26,6 +26,7 @@ async def load_map():
         print('Map users:', m.users)
         print('Map types:', m.types)
         print('Root node title:', m.tree.root.body.properties.global_.title)
+        print('Nodes count:', len(list(m.tree.root.get_all_descendants())))
 
 
 if __name__ == '__main__':
