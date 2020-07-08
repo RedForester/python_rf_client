@@ -1,6 +1,6 @@
 from typing import Optional, Generator, List, Iterator, Callable, Dict, Tuple, TypeVar, Type
-from rf_api_client.models.nodes_api_models import NodeTreeDto, NodeTreeBodyDto
 
+from rf_api_client.models.nodes_api_models import NodeTreeDto, NodeTreeBodyDto
 
 SearchFunction = Callable[['NodeWrapper'], bool]
 
@@ -116,7 +116,12 @@ class TreeWrapper:
     """ Represent nodes tree. Every node will be wrapped by `NodeWrapper` """
 
     def __init__(self, tree: NodeTreeDto):
-        self.root, self.node_index = NodeWrapper.from_tree_dto(tree)
+        root, self.node_index = NodeWrapper.from_tree_dto(tree)
+        self._root_id = root.id
+
+    @property
+    def root(self) -> NodeWrapper:
+        return self.node_index[self._root_id]
 
     def find_by_id(self, id_: str) -> Optional[NodeWrapper]:
         """
