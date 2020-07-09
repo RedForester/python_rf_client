@@ -7,7 +7,7 @@ from rf_api_client import RfApiClient
 from rf_api_client.rf_api_client import DEFAULT_RF_URL
 from rf_event_listener.api import HttpEventsApi
 from rf_event_listener.events import TypedMapEvent
-from rf_event_listener.listener import MapsListener
+from rf_event_listener.listener import MapsListener, EventConsumer
 
 from rf_client import RfClient
 from rf_client.map_wrapper import MapWrapper
@@ -56,13 +56,14 @@ async def listen():
 
     print_tree(m)
 
-    async def consumer(_: datetime, event: TypedMapEvent):
-        print('Event', event)
-        await m.apply_event(event)
-        print_tree(m)
+    class Consumer(EventConsumer):
+        async def consume(self, timestamp: datetime, event: TypedMapEvent):
+            print('Event', event)
+            await m.apply_event(event)
+            print_tree(m)
 
     listener = MapsListener(events_api)
-    listener.add_map(MAP_ID, KV_PREFIX, consumer)
+    listener.add_map(MAP_ID, KV_PREFIX, Consumer())
 
 
 if __name__ == '__main__':
