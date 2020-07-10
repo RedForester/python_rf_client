@@ -4,7 +4,7 @@ import os
 from datetime import datetime
 
 from rf_api_client import RfApiClient
-from rf_api_client.rf_api_client import DEFAULT_RF_URL
+from rf_api_client.rf_api_client import DEFAULT_RF_URL, UserAuth
 from rf_event_listener.api import HttpEventsApi
 from rf_event_listener.events import TypedMapEvent
 from rf_event_listener.listener import MapsListener, EventConsumer
@@ -23,8 +23,7 @@ VIEW_ROOT_ID = os.getenv('VIEW_ROOT_ID', None)
 logging.basicConfig(level=logging.INFO)
 
 api_client = RfApiClient(
-    username=USERNAME,
-    password=PASSWORD
+    auth=UserAuth(USERNAME, PASSWORD),
 )
 
 events_api = HttpEventsApi(

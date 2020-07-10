@@ -3,6 +3,7 @@ import logging
 import os
 
 from rf_api_client import RfApiClient
+from rf_api_client.rf_api_client import UserAuth
 
 from rf_client import RfClient
 
@@ -14,8 +15,7 @@ MAP_ID = os.getenv('MAP_ID')
 logging.basicConfig(level=logging.INFO)
 
 api_client = RfApiClient(
-    username=USERNAME,
-    password=PASSWORD
+    auth=UserAuth(USERNAME, PASSWORD),
 )
 
 
