@@ -26,5 +26,5 @@ async def load_branch(client: RfApiClient, map_id: str, view_root_id: Optional[s
 
     await load_branch(root)
 
-    logger.debug(f"Branch loading completed")
+    logger.debug("Branch loading completed")
     return root
